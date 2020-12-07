@@ -1,28 +1,18 @@
 package com.example.weather;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.webkit.JsPromptResult;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -30,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -41,7 +33,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button OK,MyConcern;
     EditText Research;
     ListView ProvinceList;
-
+ /*
+    解析和处理服务器返回的省级数据，将返回的JSON数据解析成Weather实体类
+     */
 
     private void parseJSONWithJSONObject(String jsonData){
 
@@ -88,13 +82,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         OK.setOnClickListener(this);
         MyConcern = findViewById(R.id.myconcern);
         MyConcern.setOnClickListener(this);
-
-        String responseData = getJson("data.json", this);
+        //获取控件实例
+        String responseData = getJson("city.json", this);
         parseJSONWithJSONObject(responseData);
 
 
         simpleAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, city_nameList);
-
+        //初始化ArrayAdapter，将它设置为ListViiew适配器
         ProvinceList.setAdapter(simpleAdapter);
         ProvinceList = findViewById(R.id.provincelist);
         ProvinceList.setOnItemClickListener(new AdapterView.OnItemClickListener() {      //配置ArrayList点击按钮
@@ -107,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+//点击事件
     public void onClick(View v){
         switch (v.getId()){
             case R.id.ok:
@@ -121,20 +116,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.myconcern:
-                /*
-                SharedPreferences pref = getSharedPreferences("data",MODE_PRIVATE);
-                String citycode = pref.getString("citycode","");
-                intent = new Intent(MainActivity.this, com.example.mengfanshen.web.Weather.class);
-                intent.putExtra("trancitycode",citycode);
-                startActivity(intent);
-                */
 
                 Intent intent = new Intent(MainActivity.this, com.example.weather.MyConcernList.class);
                 startActivity(intent);
                 break;
         }
     }
-
-
-
 }

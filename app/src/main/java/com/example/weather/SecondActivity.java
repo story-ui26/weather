@@ -1,10 +1,8 @@
 package com.example.weather;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,10 +23,13 @@ public class SecondActivity extends AppCompatActivity {
     ListView CityList;
     int tranid = 0;
     ArrayAdapter simpleAdapter;
-    private List<Integer> idList = new ArrayList<>();
-    private List<Integer> pidList = new ArrayList<>();
-    private List<String> city_nameList = new ArrayList<>();
-    private List<String> city_codeList = new ArrayList<>();
+    private List<Integer> csid = new ArrayList<>();
+    private List<Integer> sid = new ArrayList<>();
+    private List<String> csming = new ArrayList<>();
+    private List<String> csma = new ArrayList<>();
+    /*
+    解析和处理服务器返回的市级数据
+     */
     private void parseJSONWithJSONObject(String jsonData){
         try{
             JSONArray jsonArray = new JSONArray(jsonData);
@@ -39,22 +40,23 @@ public class SecondActivity extends AppCompatActivity {
                 String city_code = jsonObject.getString("city_code");
                 String city_name = jsonObject.getString("city_name");
                 if(pid == tranid ) {
-                    idList.add(id);
-                    pidList.add(pid);
-                    city_codeList.add(city_code);
-                    city_nameList.add(city_name);
+                    csid.add(id);
+                    sid.add(pid);
+                    csma.add(city_code);
+                    csming.add(city_name);
                 }
             }
             if(tranid == 33){
-                idList.add(33);
-                pidList.add(0);
-                city_codeList.add("101330101");
-                city_nameList.add("澳门");
+                csid.add(33);
+                sid.add(0);
+                csma.add("101330101");
+                csming.add("澳门");
             }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+//    获取Jason
     public static String getJson(String fileName, Context context) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
@@ -69,6 +71,7 @@ public class SecondActivity extends AppCompatActivity {
         }
         return stringBuilder.toString();
     }
+//    获取控件实例
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
@@ -77,18 +80,18 @@ public class SecondActivity extends AppCompatActivity {
         Intent intent = getIntent();
         tranid = intent.getIntExtra("tran",-1);
 
-        String responseData = getJson("data.json",this);
+        String responseData = getJson("city.json",this);
         parseJSONWithJSONObject(responseData);
 
 
-        simpleAdapter = new ArrayAdapter(SecondActivity.this,android.R.layout.simple_list_item_1,city_nameList);
-
+        simpleAdapter = new ArrayAdapter(SecondActivity.this,android.R.layout.simple_list_item_1,csming);
+        //初始化ArrayAdapter，将它设置为ListViiew适配器
         CityList.setAdapter(simpleAdapter);
         CityList = findViewById(R.id.citylist);
         CityList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void  onItemClick(AdapterView<?> parent, View view , int position , long id){
-                String trancode = city_codeList.get(position);
+                String trancode = csma.get(position);
                 Intent intent = new Intent(SecondActivity.this, com.example.weather.Weather.class);
                 intent.putExtra("trancitycode",trancode);
                 startActivity(intent);

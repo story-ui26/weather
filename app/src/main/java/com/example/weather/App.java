@@ -5,35 +5,35 @@ import java.util.List;
 public class App {
     private String time;
     private String date;
-    private String message;
-    private String status;
-    private data data;
-    private forecast forecast;
-    private CityInfo CityInfo;
+    private String xx;
+    private String zt;
+    private data shuju;
+    private forecast prediction;
+    private CityInfo csinfo;
 
     public void setCityInfo(App.CityInfo cityInfo) {
-        CityInfo = cityInfo;
+        csinfo = cityInfo;
     }
 
     public void setForecast(App.forecast forecast) {
-        this.forecast = forecast;
+        this.prediction = forecast;
     }
 
     public App.forecast getForecast() {
-        return forecast;
+        return prediction;
     }
 
 
     public App.CityInfo getCityInfo() {
-        return CityInfo;
+        return csinfo;
     }
 
     public void setData(App.data data) {
-        this.data = data;
+        this.shuju = data;
     }
 
     public App.data getData() {
-        return data;
+        return shuju;
     }
 
     public void setDate(String date) {
@@ -41,11 +41,11 @@ public class App {
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        this.xx = message;
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        this.zt = status;
     }
 
     public void setTime(String time) {
@@ -61,24 +61,24 @@ public class App {
     }
 
     public String getMessage() {
-        return message;
+        return xx;
     }
 
     public String getStatus() {
-        return status;
+        return zt;
     }
 
     public static class forecast {
         public String date;
         public String ymd;
-        public String week;
-        public String sunrise;
+        public String zhou;
+        public String up;
         public String high;
         public String low;
-        public String sunset;
+        public String down;
         public String aqi;
-        public String fx;
-        public String fl;
+        public String wd;
+        public String wp;
         public String type;
         public String notice;
 
@@ -87,7 +87,7 @@ public class App {
         }
 
         public void setWeek(String week) {
-            this.week = week;
+            this.zhou = week;
         }
 
         public void setType(String type) {
@@ -95,11 +95,11 @@ public class App {
         }
 
         public void setSunset(String sunset) {
-            this.sunset = sunset;
+            this.down = sunset;
         }
 
         public void setSunrise(String sunrise) {
-            this.sunrise = sunrise;
+            this.up = sunrise;
         }
 
         public void setNotice(String notice) {
@@ -115,11 +115,11 @@ public class App {
         }
 
         public void setFx(String fx) {
-            this.fx = fx;
+            this.wd = fx;
         }
 
         public void setFl(String fl) {
-            this.fl = fl;
+            this.wp = fl;
         }
 
         public void setAqi(String aqi) {
@@ -139,11 +139,11 @@ public class App {
         }
 
         public String getFl() {
-            return fl;
+            return wp;
         }
 
         public String getFx() {
-            return fx;
+            return wd;
         }
 
         public String getHigh() {
@@ -155,7 +155,7 @@ public class App {
         }
 
         public String getSunrise() {
-            return sunrise;
+            return up;
         }
 
         public String getNotice() {
@@ -163,7 +163,7 @@ public class App {
         }
 
         public String getSunset() {
-            return sunset;
+            return down;
         }
 
         public String getType() {
@@ -171,7 +171,7 @@ public class App {
         }
 
         public String getWeek() {
-            return week;
+            return zhou;
         }
 
         public String getYmd() {
@@ -186,7 +186,7 @@ public class App {
         private String pm10;
         private String quality;
         private String wendu;
-        private String ganmao;
+        private String cold;
         public yesterday yesterday;
         private List<forecast> Forecast;
 
@@ -203,7 +203,7 @@ public class App {
         }
 
         public void setGanmao(String ganmao) {
-            this.ganmao = ganmao;
+            this.cold = ganmao;
         }
 
         public void setPm10(String pm10) {
@@ -239,7 +239,7 @@ public class App {
         }
 
         public String getGanmao() {
-            return ganmao;
+            return cold;
         }
 
         public String getPm10() {
@@ -255,21 +255,21 @@ public class App {
         }
     }
     public static class yesterday{
-        public String date;
+        public String riqi;
         public String ymd;
-        public String week;
-        public String sunrise;
+        public String zhou;
+        public String up;
         public String high;
         public String low;
-        public String sunset;
+        public String down;
         public String aqi;
-        public String fx;
-        public String fl;
+        public String wd;
+        public String wp;
         public String type;
         public String notice;
 
         public void setDate(String date) {
-            this.date = date;
+            this.riqi = date;
         }
 
         public void setAqi(String aqi) {
@@ -277,11 +277,11 @@ public class App {
         }
 
         public void setFl(String fl) {
-            this.fl = fl;
+            this.wp = fl;
         }
 
         public void setFx(String fx) {
-            this.fx = fx;
+            this.wd = fx;
         }
 
         public void setHigh(String high) {
@@ -297,11 +297,11 @@ public class App {
         }
 
         public void setSunrise(String sunrise) {
-            this.sunrise = sunrise;
+            this.up = sunrise;
         }
 
         public void setSunset(String sunset) {
-            this.sunset = sunset;
+            this.down = sunset;
         }
 
         public void setType(String type) {
@@ -309,7 +309,7 @@ public class App {
         }
 
         public void setWeek(String week) {
-            this.week = week;
+            this.zhou = week;
         }
 
         public void setYmd(String ymd) {
@@ -317,7 +317,7 @@ public class App {
         }
 
         public String getDate() {
-            return date;
+            return riqi;
         }
 
         public String getAqi() {
@@ -325,11 +325,11 @@ public class App {
         }
 
         public String getFl() {
-            return fl;
+            return wp;
         }
 
         public String getFx() {
-            return fx;
+            return wd;
         }
 
         public String getHigh() {
@@ -341,7 +341,7 @@ public class App {
         }
 
         public String getSunrise() {
-            return sunrise;
+            return up;
         }
 
         public String getNotice() {
@@ -349,7 +349,7 @@ public class App {
         }
 
         public String getSunset() {
-            return sunset;
+            return down;
         }
 
         public String getType() {
@@ -357,7 +357,7 @@ public class App {
         }
 
         public String getWeek() {
-            return week;
+            return zhou;
         }
 
         public String getYmd() {
@@ -368,7 +368,7 @@ public class App {
         private String city;
         private String cityId;
         private String parent;
-        private String updateTime;
+        private String gengxing;
         public void setCity(String city) {
             this.city = city;
         }
@@ -382,7 +382,7 @@ public class App {
         }
 
         public void setUpdateTime(String updateTime) {
-            this.updateTime = updateTime;
+            this.gengxing = updateTime;
         }
 
         public String getCity() {
@@ -398,7 +398,7 @@ public class App {
         }
 
         public String getUpdateTime() {
-            return updateTime;
+            return gengxing;
         }
     }
 }

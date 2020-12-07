@@ -28,25 +28,25 @@ import okhttp3.Response;
 public class Weather extends AppCompatActivity implements View.OnClickListener{
     TextView Textshow;
     String researchcitycode;
-    Button Concern,refresh;
-    String CityshowString;
+    Button Concern,shuaxin;
+    String displayweather;
 
     private String city;
-    private App.forecast forecast0,forecast1,forecast2,forecast3,forecast4;
+    private App.forecast prediction0,prediction1,prediction2,prediction3,prediction4;
     private String cityId;
-    private String parent;
-    private String updateTime;
+    private String province;
+    private String gengxin;
     private String time;
     private String date;
-    private String message;
+    private String info;
     private String status;
-    private String shidu;
+    private String humidity;
     private String pm25;
     private String pm10;
     private String quality;
-    private String wendu;
-    private String ganmao;
-    private List<App.forecast> forecasts;
+    private String temperature;
+    private String cold;
+    private List<App.forecast> prediction;
     private String ymd;
     private String date_1;
     private String week;
@@ -55,27 +55,29 @@ public class Weather extends AppCompatActivity implements View.OnClickListener{
     private String low;
     private String sunset;
     private String aqi;
-    private String fx;
-    private String fl;
+    private String wd;
+    private String wp;
     private String type;
     private String notice;
     //今天和未来四天的天气情况
-    private String date0,date1,date2,date3,date4;
-    private String ymd0,ymd1,ymd2,ymd3,ymd4;
-    private String week0,week1,week2,week3,week4;
-    private String sunrise0,sunrise1,sunrise2,sunrise3,sunrise4;
+    private String riqi0,riqi1,riqi2,riqi3,riqi4;
+    private String now0,now1,now2,now3,now4;
+    private String zhou0,zhou1,zhou2,zhou3,zhou4;
+    private String up0,up1,up2,up3,up4;
     private String high0,high1,high2,high3,high4;
     private String low0,low1,low2,low3,low4;
-    private String sunset0,sunset1,sunset2,sunset3,sunset4;
-    private String aqi0,aqi1,aqi2,aqi3,aqi4;
-    private String fx0,fx1,fx2,fx3,fx4;
-    private String fl0,fl1,fl2,fl3,fl4;
+    private String down0,down1,down2,down3,down4;
+    private String kqzs0,kqzs1,kqzs2,kqzs3,kqzs4;
+    private String winddirection0,winddirection1,winddirection2,winddirection3,winddirection4;
+    private String windpower0,windpower1,windpower2,windpower3,windpower4;
     private String type0,type1,type2,type3,type4;
-    private String notice0,notice1,notice2,notice3,notice4;
+    private String tz0,tz1,tz2,tz3,tz4;
     int databaseid;
     String databasedata;
     int sign = 1;
     @Override
+    /*创建菜单
+     */
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.main,menu);
         return true;
@@ -88,8 +90,8 @@ public class Weather extends AppCompatActivity implements View.OnClickListener{
         Textshow = findViewById(R.id.TextView);
         Concern = findViewById(R.id.concern1);
         Concern.setOnClickListener(this);
-        refresh = findViewById(R.id.refresh);
-        refresh.setOnClickListener(this);
+        shuaxin = findViewById(R.id.refresh);
+        shuaxin.setOnClickListener(this);
 
 
         Intent intent = getIntent();
@@ -111,25 +113,28 @@ public class Weather extends AppCompatActivity implements View.OnClickListener{
         tranformat = Integer.parseInt(researchcitycode);
 
         if(databaseid ==  tranformat ){
-            sign = 1;
+            sign = 1;//优先从数据库查询
             showResponse(databasedata);
         }else {
-            sign = 0;
+            sign = 0;//如果没有查询再去服务器上查询
             sendRequestWithOkHttp();
         }
 
     }
-
+/*
+处理服务器响应
+ */
 
     private void sendRequestWithOkHttp(){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try{
+
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("http://t.weather.sojson.com/api/weather/city/"+researchcitycode)
-                            .build();
+                            .url("http://t.weather.itboy.net/api/weather/city/"+researchcitycode)
+                            .build();//传入请求地址，并注册一个回调来处理服务器响应
                     Response response = client.newCall(request).execute();
                     String responseData = response.body().string();
                     Log.d("data is", responseData);
@@ -141,10 +146,9 @@ public class Weather extends AppCompatActivity implements View.OnClickListener{
 
         }).start();
     }
-
-
-
-
+    /*
+    解析和处理服务器返回的县级数据
+     */
     private void parseJSONWithFastJSON(String jsonData){
         if(jsonData.length()<100){
             Log.d("M","城市ID不存在");
@@ -155,7 +159,7 @@ public class Weather extends AppCompatActivity implements View.OnClickListener{
         else {
             App app = JSON.parseObject(jsonData, App.class);
             time = app.getTime();
-            message = app.getMessage();
+            info = app.getMessage();
             status = app.getStatus();
             date = app.getDate();
 
@@ -163,92 +167,93 @@ public class Weather extends AppCompatActivity implements View.OnClickListener{
             App.CityInfo cityInfo = app.getCityInfo();
             city = cityInfo.getCity();
             cityId = cityInfo.getCityId();
-            parent = cityInfo.getParent();
-            updateTime = cityInfo.getUpdateTime();
+            province = cityInfo.getParent();
+            gengxin = cityInfo.getUpdateTime();
 
 
             App.data data = app.getData();
-            shidu = data.getShidu();
+            humidity = data.getShidu();
             pm10 = data.getPm10();
             pm25 = data.getPm25();
             quality = data.getQuality();
-            ganmao = data.getGanmao();
-            wendu = data.getWendu();
-            forecasts = data.getForecast();
-//今天和未来四天的天气情况
-            forecast0 = forecasts.get(0);
-            date0 = forecast0.getDate();
-            high0 = forecast0.getHigh();
-            low0 = forecast0.getLow();
-            week0 = forecast0.getWeek();
-            sunrise0 = forecast0.getSunrise();
-            ymd0 = forecast0.getYmd();
-            sunset0 = forecast0.getSunset();
-            aqi0 = forecast0.getAqi();
-            fx0 = forecast0.getFx();
-            fl0 = forecast0.getFl();
-            notice0 = forecast0.getNotice();
-            type0 = forecast0.getType();
+            cold = data.getGanmao();
+            temperature = data.getWendu();
+            prediction = data.getForecast();
+//获取今天和未来四天的天气情况
+//            昨天天气情况
+            prediction0 = prediction.get(0);
+            riqi0 = prediction0.getDate();
+            high0 = prediction0.getHigh();
+            low0 = prediction0.getLow();
+            zhou0 = prediction0.getWeek();
+            up0 = prediction0.getSunrise();
+            now0 = prediction0.getYmd();
+            down0 = prediction0.getSunset();
+            kqzs0 = prediction0.getAqi();
+            winddirection0 = prediction0.getFx();
+            windpower0 = prediction0.getFl();
+            tz0 = prediction0.getNotice();
+            type0 = prediction0.getType();
+//今天天气情况
+            prediction1 = prediction.get(1);
+            riqi1 = prediction1.getDate();
+            high1 = prediction1.getHigh();
+            low1 = prediction1.getLow();
+            zhou1 = prediction1.getWeek();
+            up1 = prediction1.getSunrise();
+            now1 = prediction1.getYmd();
+            down1 = prediction1.getSunset();
+            kqzs1 = prediction1.getAqi();
+            winddirection1 = prediction1.getFx();
+            windpower1 = prediction1.getFl();
+            tz1 = prediction1.getNotice();
+            type1 = prediction1.getType();
 
-            forecast1 = forecasts.get(1);
-            date1 = forecast1.getDate();
-            high1 = forecast1.getHigh();
-            low1 = forecast1.getLow();
-            week1 = forecast1.getWeek();
-            sunrise1 = forecast1.getSunrise();
-            ymd1 = forecast1.getYmd();
-            sunset1 = forecast1.getSunset();
-            aqi1 = forecast1.getAqi();
-            fx1 = forecast1.getFx();
-            fl1 = forecast1.getFl();
-            notice1 = forecast1.getNotice();
-            type1 = forecast1.getType();
+//明天天气情况
+            prediction2 = prediction.get(2);
+            riqi2 = prediction2.getDate();
+            high2 = prediction2.getHigh();
+            low2 = prediction2.getLow();
+            zhou2 = prediction2.getWeek();
+            up2 = prediction2.getSunrise();
+            now2 = prediction2.getYmd();
+            down2 = prediction2.getSunset();
+            kqzs2 = prediction2.getAqi();
+            winddirection2 = prediction2.getFx();
+            windpower2 = prediction2.getFl();
+            tz2 = prediction2.getNotice();
+            type2 = prediction2.getType();
+//未来两日天气情况
+            prediction3 = prediction.get(3);
+            riqi3 = prediction3.getDate();
+            high3 = prediction3.getHigh();
+            low3 = prediction3.getLow();
+            zhou3 = prediction3.getWeek();
+            up3 = prediction3.getSunrise();
+            now3 = prediction3.getYmd();
+            down3 = prediction3.getSunset();
+            kqzs3 = prediction3.getAqi();
+            winddirection3 = prediction3.getFx();
+            windpower3 = prediction3.getFl();
+            tz3 = prediction3.getNotice();
+            type3 = prediction3.getType();
 
+//未来三日天气情况
+            prediction4 = prediction.get(4);
+            riqi4 = prediction4.getDate();
+            high4 = prediction4.getHigh();
+            low4 = prediction4.getLow();
+            zhou4 = prediction4.getWeek();
+            up4 = prediction4.getSunrise();
+            now4 = prediction4.getYmd();
+            down4 = prediction4.getSunset();
+            kqzs4 = prediction4.getAqi();
+            winddirection4 = prediction4.getFx();
+            windpower4 = prediction4.getFl();
+            tz4 = prediction4.getNotice();
+            type4 = prediction4.getType();
 
-            forecast2 = forecasts.get(2);
-            date2 = forecast2.getDate();
-            high2 = forecast2.getHigh();
-            low2 = forecast2.getLow();
-            week2 = forecast2.getWeek();
-            sunrise2 = forecast2.getSunrise();
-            ymd2 = forecast2.getYmd();
-            sunset2 = forecast2.getSunset();
-            aqi2 = forecast2.getAqi();
-            fx2 = forecast2.getFx();
-            fl2 = forecast2.getFl();
-            notice2 = forecast2.getNotice();
-            type2 = forecast2.getType();
-
-            forecast3 = forecasts.get(3);
-            date3 = forecast3.getDate();
-            high3 = forecast3.getHigh();
-            low3 = forecast3.getLow();
-            week3 = forecast3.getWeek();
-            sunrise3 = forecast3.getSunrise();
-            ymd3 = forecast3.getYmd();
-            sunset3 = forecast3.getSunset();
-            aqi3 = forecast3.getAqi();
-            fx3 = forecast3.getFx();
-            fl3 = forecast3.getFl();
-            notice3 = forecast3.getNotice();
-            type3 = forecast3.getType();
-
-
-            forecast4 = forecasts.get(4);
-            date4 = forecast4.getDate();
-            high4 = forecast4.getHigh();
-            low4 = forecast4.getLow();
-            week4 = forecast4.getWeek();
-            sunrise4 = forecast4.getSunrise();
-            ymd4 = forecast4.getYmd();
-            sunset4 = forecast4.getSunset();
-            aqi4 = forecast4.getAqi();
-            fx4 = forecast4.getFx();
-            fl4 = forecast4.getFl();
-            notice4 = forecast4.getNotice();
-            type4 = forecast4.getType();
-
-
+//未来四日天气情况
             App.yesterday yesterday = data.getYesterday();
             ymd = yesterday.getYmd();
             week = yesterday.getWeek();
@@ -257,8 +262,8 @@ public class Weather extends AppCompatActivity implements View.OnClickListener{
             low = yesterday.getLow();
             sunset = yesterday.getSunset();
             aqi = yesterday.getAqi();
-            fl = yesterday.getFl();
-            fx = yesterday.getFx();
+            wp = yesterday.getFl();
+            wd = yesterday.getFx();
             notice = yesterday.getNotice();
             type = yesterday.getType();
             date_1 = yesterday.getDate();
@@ -288,22 +293,21 @@ public class Weather extends AppCompatActivity implements View.OnClickListener{
         }
     }
 
-
+//显示天气信息
 
     private void showResponse(final String response){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 parseJSONWithFastJSON(response);
-                String CityshowString;
-                CityshowString = "数据更新时间:"+time+"\n"+"当前状态："+message+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+parent+"\n"+"更新时间"+updateTime;
-                CityshowString = CityshowString+"\n"+"空气湿度"+shidu+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+ganmao+"\n"+"当前温度"+wendu+"\n";
-                CityshowString = CityshowString+"当前日期:"+ymd0+"\n"+week0+"\n"+"日出时间:"+sunrise0+"\n"+"最高温度:"+high0+"\n"+"最低温度:"+low0+"\n"+"日落时间："+sunset0+"\n"+"空气指数："+aqi0+"\n"+"风力："+fl0+"\n"+"风向："+fx0+"\n"+"提示:"+notice0+"\n"+"天气:"+type0;
-                Textshow.setText(CityshowString);
+                displayweather = "数据更新时间:"+time+"\n"+"当前状态："+info+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+province+"\n"+"更新时间"+gengxin;
+                displayweather = displayweather+"\n"+"空气湿度"+humidity+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+cold+"\n"+"当前温度"+temperature+"\n";
+                displayweather = displayweather+"当前日期:"+now0+"\n"+zhou0+"\n"+"日出时间:"+up0+"\n"+"最高温度:"+high0+"\n"+"最低温度:"+low0+"\n"+"日落时间："+down0+"\n"+"空气指数："+kqzs0+"\n"+"风力："+windpower0+"\n"+"风向："+winddirection0+"\n"+"提示:"+tz0+"\n"+"天气:"+type0;
+                Textshow.setText(displayweather);
             }
         });
     }
-
+//点击事件
     @Override
     public void onClick(View v){
         switch (v.getId()){
@@ -329,48 +333,50 @@ public class Weather extends AppCompatActivity implements View.OnClickListener{
                 break;
         }
     }
-
+/*
+显示天气情况
+ */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.yesterday:
-                CityshowString = "数据更新时间:"+time+"\n"+"当前状态："+message+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+parent+"\n"+"更新时间"+updateTime;
-                CityshowString = CityshowString+"\n"+"空气湿度"+shidu+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+ganmao+"\n"+"当前温度"+wendu+"\n";
-                CityshowString = CityshowString+"当前日期:"+ymd+"\n"+week+"\n"+"日出时间:"+sunrise+"\n"+"最高温度:"+high+"\n"+"最低温度:"+low+"\n"+"日落时间："+sunset+"\n"+"空气指数："+aqi+"\n"+"风力："+fl+"\n"+"风向："+fx+"\n"+"提示:"+notice+"\n"+"天气:"+type;
+                displayweather = "数据更新时间:"+time+"\n"+"当前状态："+info+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+province+"\n"+"更新时间"+gengxin;
+                displayweather = displayweather+"\n"+"空气湿度"+humidity+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+cold+"\n"+"当前温度"+temperature+"\n";
+                displayweather = displayweather+"当前日期:"+ymd+"\n"+week+"\n"+"日出时间:"+sunrise+"\n"+"最高温度:"+high+"\n"+"最低温度:"+low+"\n"+"日落时间："+sunset+"\n"+"空气指数："+aqi+"\n"+"风力："+wp+"\n"+"风向："+wd+"\n"+"提示:"+notice+"\n"+"天气:"+type;
 
-                Textshow.setText(CityshowString);
+                Textshow.setText(displayweather);
                 break;
             case  R.id.today:
-                CityshowString = "数据更新时间:"+time+"\n"+"当前状态："+message+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+parent+"\n"+"更新时间"+updateTime;
-                CityshowString = CityshowString+"\n"+"空气湿度"+shidu+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+ganmao+"\n"+"当前温度"+wendu+"\n";
-                CityshowString = CityshowString+"当前日期:"+ymd0+"\n"+week0+"\n"+"日出时间:"+sunrise0+"\n"+"最高温度:"+high0+"\n"+"最低温度:"+low0+"\n"+"日落时间："+sunset0+"\n"+"空气指数："+aqi0+"\n"+"风力："+fl0+"\n"+"风向："+fx0+"\n"+"提示:"+notice0+"\n"+"天气:"+type0;
+                displayweather = "数据更新时间:"+time+"\n"+"当前状态："+info+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+province+"\n"+"更新时间"+gengxin;
+                displayweather = displayweather+"\n"+"空气湿度"+humidity+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+cold+"\n"+"当前温度"+temperature+"\n";
+                displayweather = displayweather+"当前日期:"+now0+"\n"+zhou0+"\n"+"日出时间:"+up0+"\n"+"最高温度:"+high0+"\n"+"最低温度:"+low0+"\n"+"日落时间："+down0+"\n"+"空气指数："+kqzs0+"\n"+"风力："+windpower0+"\n"+"风向："+winddirection0+"\n"+"提示:"+tz0+"\n"+"天气:"+type0;
 
-                Textshow.setText(CityshowString);
+                Textshow.setText(displayweather);
                 break;
             case R.id.forecast1:
-                CityshowString = "数据更新时间:"+time+"\n"+"当前状态："+message+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+parent+"\n"+"更新时间"+updateTime;
-                CityshowString = CityshowString+"\n"+"空气湿度"+shidu+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+ganmao+"\n"+"当前温度"+wendu+"\n";
-                CityshowString = CityshowString+"当前日期:"+ymd1+"\n"+week1+"\n"+"日出时间:"+sunrise1+"\n"+"最高温度:"+high1+"\n"+"最低温度:"+low1+"\n"+"日落时间："+sunset1+"\n"+"空气指数："+aqi1+"\n"+"风力："+fl1+"\n"+"风向："+fx1+"\n"+"提示:"+notice1+"\n"+"天气:"+type1;
-                Textshow.setText(CityshowString);
+                displayweather = "数据更新时间:"+time+"\n"+"当前状态："+info+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+province+"\n"+"更新时间"+gengxin;
+                displayweather = displayweather+"\n"+"空气湿度"+humidity+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+cold+"\n"+"当前温度"+temperature+"\n";
+                displayweather = displayweather+"当前日期:"+now1+"\n"+zhou1+"\n"+"日出时间:"+up1+"\n"+"最高温度:"+high1+"\n"+"最低温度:"+low1+"\n"+"日落时间："+down1+"\n"+"空气指数："+kqzs1+"\n"+"风力："+windpower1+"\n"+"风向："+winddirection1+"\n"+"提示:"+tz1+"\n"+"天气:"+type1;
+                Textshow.setText(displayweather);
                 break;
             case  R.id.forecast2:
-                CityshowString = "数据更新时间:"+time+"\n"+"当前状态："+message+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+parent+"\n"+"更新时间"+updateTime;
-                CityshowString = CityshowString+"\n"+"空气湿度"+shidu+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+ganmao+"\n"+"当前温度"+wendu+"\n";
-                CityshowString = CityshowString+"当前日期:"+ymd2+"\n"+week2+"\n"+"日出时间:"+sunrise2+"\n"+"最高温度:"+high2+"\n"+"最低温度:"+low2+"\n"+"日落时间："+sunset2+"\n"+"空气指数："+aqi2+"\n"+"风力："+fl2+"\n"+"风向："+fx2+"\n"+"提示:"+notice2+"\n"+"天气:"+type2;
-                Textshow.setText(CityshowString);
+                displayweather = "数据更新时间:"+time+"\n"+"当前状态："+info+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+province+"\n"+"更新时间"+gengxin;
+                displayweather = displayweather+"\n"+"空气湿度"+humidity+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+cold+"\n"+"当前温度"+temperature+"\n";
+                displayweather = displayweather+"当前日期:"+now2+"\n"+zhou2+"\n"+"日出时间:"+up2+"\n"+"最高温度:"+high2+"\n"+"最低温度:"+low2+"\n"+"日落时间："+down2+"\n"+"空气指数："+kqzs2+"\n"+"风力："+windpower2+"\n"+"风向："+winddirection2+"\n"+"提示:"+tz2+"\n"+"天气:"+type2;
+                Textshow.setText(displayweather);
                 break;
             case  R.id.forecast3:
-                CityshowString = "数据更新时间:"+time+"\n"+"当前状态："+message+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+parent+"\n"+"更新时间"+updateTime;
-                CityshowString = CityshowString+"\n"+"空气湿度"+shidu+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+ganmao+"\n"+"当前温度"+wendu+"\n";
-                CityshowString = CityshowString+"当前日期:"+ymd3+"\n"+week3+"\n"+"日出时间:"+sunrise3+"\n"+"最高温度:"+high3+"\n"+"最低温度:"+low3+"\n"+"日落时间："+sunset3+"\n"+"空气指数："+aqi3+"\n"+"风力："+fl3+"\n"+"风向："+fx3+"\n"+"提示:"+notice3+"\n"+"天气:"+type3;
-                Textshow.setText(CityshowString);
+                displayweather = "数据更新时间:"+time+"\n"+"当前状态："+info+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+province+"\n"+"更新时间"+gengxin;
+                displayweather = displayweather+"\n"+"空气湿度"+humidity+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+cold+"\n"+"当前温度"+temperature+"\n";
+                displayweather = displayweather+"当前日期:"+now3+"\n"+zhou3+"\n"+"日出时间:"+up3+"\n"+"最高温度:"+high3+"\n"+"最低温度:"+low3+"\n"+"日落时间："+down3+"\n"+"空气指数："+kqzs3+"\n"+"风力："+windpower3+"\n"+"风向："+winddirection3+"\n"+"提示:"+tz3+"\n"+"天气:"+type3;
+                Textshow.setText(displayweather);
                 break;
             case R.id.forecast4:
-                CityshowString = "数据更新时间:"+time+"\n"+"当前状态："+message+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+parent+"\n"+"更新时间"+updateTime;
-                CityshowString = CityshowString+"\n"+"空气湿度"+shidu+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+ganmao+"\n"+"当前温度"+wendu+"\n";
-                CityshowString = CityshowString+"当前日期:"+ymd4+"\n"+week4+"\n"+"日出时间:"+sunrise4+"\n"+"最高温度:"+high4+"\n"+"最低温度:"+low4+"\n"+"日落时间："+sunset4+"\n"+"空气指数："+aqi4+"\n"+"风力："+fl4+"\n"+"风向："+fx4+"\n"+"提示:"+notice4+"\n"+"天气:"+type4;
-                Textshow.setText(CityshowString);
+                displayweather = "数据更新时间:"+time+"\n"+"当前状态："+info+"\n"+"状态号:"+status+"\n"+"当前日期:"+date+ "\n"+"当前城市:"+city+"\n"+"城市ID:"+cityId+"\n"+"所在省:"+province+"\n"+"更新时间"+gengxin;
+                displayweather = displayweather+"\n"+"空气湿度"+humidity+"\n"+"pm10:"+pm10+"\n"+"pm2.5:"+pm25+"\n"+"空气质量:"+quality+"\n"+"活动适宜群体:"+cold+"\n"+"当前温度"+temperature+"\n";
+                displayweather =displayweather+"当前日期:"+now4+"\n"+zhou4+"\n"+"日出时间:"+up4+"\n"+"最高温度:"+high4+"\n"+"最低温度:"+low4+"\n"+"日落时间："+down4+"\n"+"空气指数："+kqzs4+"\n"+"风力："+windpower4+"\n"+"风向："+winddirection4+"\n"+"提示:"+tz4+"\n"+"天气:"+type4;
+                Textshow.setText(displayweather);
                 break;
             case R.id.cancel_concern:
                 MyDataBaseHelper dbHelper = new MyDataBaseHelper(this,"Concern.db",null,1);

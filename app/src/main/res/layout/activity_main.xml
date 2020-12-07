@@ -36,4 +36,5 @@
             android:layout_height="wrap_content"
             android:text="我的关注" />
     </LinearLayout>
+
 </LinearLayout>
